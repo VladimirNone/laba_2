@@ -1,0 +1,43 @@
+name: Build VKOSTYA static site
+
+on:
+  push:
+
+jobs:
+  build:
+    name: Build n deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: python setup
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.12
+
+      - name: install mkdocs
+        run: pip install mkdocs
+      
+      - name: install jinja
+        run: pip install jinja2
+      
+      - name: Run j2lint
+        uses: ansible-actions/j2lint-action@v0.0.1
+        with:
+          target: "./statics"
+      
+      - name: Build
+        run: mkdocs build
+
+      - name: HTML5Validator
+        uses: Cyb3r-Jak3/html5validator-action@v7.2.0
+        with:
+          root: ./site
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./site
