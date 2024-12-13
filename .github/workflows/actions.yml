@@ -1,4 +1,4 @@
-name: Build VKOSTYA static site
+name: Build Vladimir static site
 
 on:
   push:
